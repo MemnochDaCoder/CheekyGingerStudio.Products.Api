@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  cheekygingerapi:
+    image: cheekygingerapi
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+  
+  rabbitmq:
+    image: "rabbitmq:cheekyrabbit"
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    environment:
+      RABBITMQ_DEFAULT_USER: cheekyadmin
+      RABBITMQ_DEFAULT_PASS: aF@0CLuh7#I26!zLT<AC
+  
+  postgres:
+    image: "postgres"
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: cheekyadmin
+      POSTGRES_PASSWORD: .v4uY,nohOW8"2jbMZ,t
