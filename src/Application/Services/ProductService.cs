@@ -1,6 +1,6 @@
 ﻿using Application.Factories.Interfaces;
-using CloudNative.CloudEvents;
 using Domain.Events;
+using Domain.Models;
 using Infrastructure.Repositories.Interfaces;
 
 namespace Application.Services
@@ -9,32 +9,52 @@ namespace Application.Services
     {
         private readonly IProductRepository _repository;
         private readonly IProductFactory _factory;
+        private readonly ILogger<ProductService> _logger;
 
-        public ProductService(IProductRepository repository, IProductFactory factory)
+        public ProductService(IProductRepository repository, IProductFactory factory, ILogger<ProductService> logger)
         {
             _repository = repository;
             _factory = factory;
+            _logger = logger;
         }
 
-        public void CreateProduct(string name, string description, decimal price, string category)
+        public async Task<Product> GetByIdAsync(Guid id)
+        {
+            return await _repository.GetByIdAsync(id);
+        }
+
+        public async Task CreateProductAsync(string name, string description, decimal price, string category)
         {
             var product = _factory.CreateProduct(name, description, price, category);
             var productCreatedEvent = new ProductCreatedEvent(product.Id, product.Name, product.Description, product.Price, product.Category);
 
-            //Persist
-            //_repository.SaveEvents(product.Id, new List<CloudEvent> { productCreatedEvent }, 0);
+            // Persist
+            // Save events logic here...
+            await SaveProductAsync(product);
         }
 
-        public void UpdateProduct(Guid id, string name, string description, decimal price, string category)
+        public async Task<bool> SaveProductAsync(Product product)
         {
-            var product = _repository.GetById(id);
-            // TODO: Update product and raise ProductUpdatedEvent...
+            if (!ValidateProduct(product))
+            {
+                _logger.LogError($"Invalid product: {product}");
+                throw new ArgumentException("Invalid product.");
+            }
+
+            // Persist
+            // Save events logic here...
+            return await _repository.SaveProductAsync(product);
         }
 
-        public void DeleteProduct(Guid id)
+        // Additional methods for UpdateProduct, DeleteProduct, etc.
+
+        private bool ValidateProduct(Product product)
         {
-            // TODO: Raise ProductDeletedEvent...
+            return product != null &&
+                   !string.IsNullOrWhiteSpace(product.Name) &&
+                   !string.IsNullOrWhiteSpace(product.Description) &&
+                   !string.IsNullOrWhiteSpace(product.Category) &&
+                   product.Price > 0;
         }
     }
-
 }

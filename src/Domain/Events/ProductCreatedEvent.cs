@@ -1,4 +1,6 @@
-﻿namespace Domain.Events
+﻿using Domain.Models;
+
+namespace Domain.Events
 {
     public class ProductCreatedEvent
     {
@@ -15,6 +17,15 @@
             Description = description;
             Price = price;
             Category = category;
+        }
+
+        public ProductCreatedEvent(Product product)
+        {
+            Id = product.Id;
+            Name = product.Name;
+            Description = product.Description;
+            Price = product.Price;
+            Category = product.Category;
         }
     }
 }

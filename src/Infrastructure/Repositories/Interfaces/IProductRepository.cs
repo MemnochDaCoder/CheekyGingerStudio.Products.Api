@@ -4,7 +4,7 @@ namespace Infrastructure.Repositories.Interfaces
 {
     public interface IProductRepository
     {
-        Product GetById(Guid id);
-        void Save(Product aggregate);
+        Task<Product> GetByIdAsync(Guid id);
+        Task<bool> SaveProductAsync(Product product);
     }
 }
