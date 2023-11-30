@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   cheekygingerapi:
-    image: cheekygingerapi
+    image: cheekygingerstudio_api
     build:
       context: .
       dockerfile: Dockerfile
@@ -23,5 +23,10 @@ services:
     ports:
       - "5432:5432"
     environment:
+      POSTGRES_DB: cheekygingerstudio
       POSTGRES_USER: cheekyadmin
       POSTGRES_PASSWORD: .v4uY,nohOW8"2jbMZ,t
+    volumes:
+        - product_data:/var/lib/postgresql/products
+        - event_data:/var/lib/postgresql/product.events
+        - inventory_data:/var/lib/postgresql/product.events

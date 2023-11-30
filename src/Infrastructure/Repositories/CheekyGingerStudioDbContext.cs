@@ -14,7 +14,13 @@ namespace Infrastructure.Repositories
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<Product>().Property(p => p.Name).IsRequired();
+            modelBuilder.Entity<Product>().Property(p => p.Category).IsRequired();
+            modelBuilder.Entity<Product>().Property(p => p.Price).IsRequired();
+            modelBuilder.Entity<Product>().Property(p => p.Description).IsRequired();
+            modelBuilder.Entity<Product>().Property(p => p.Id).IsRequired();
         }
     }
 }

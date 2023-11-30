@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Application.Services;
 using Domain.Models;
-using System.Threading.Tasks;
 
 namespace Application.Controllers
 {
@@ -9,33 +8,43 @@ namespace Application.Controllers
     [Route("[controller]")]
     public class ProductsController : ControllerBase
     {
-        private readonly ProductService _productService;
+        private readonly IProductService _productService;
+        private readonly ILogger<ProductsController> _logger;
 
-        public ProductsController(ProductService productService)
+        public ProductsController(IProductService productService, ILogger<ProductsController> logger)
         {
             _productService = productService;
+            _logger = logger;
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateProduct([FromBody] Product product)
+        public async Task<IActionResult> CreateProduct(string name, string description, decimal price, string category)
         {
             try
             {
-                var createdProduct = await _productService.CreateProductAsync(product);
-                return CreatedAtAction(nameof(GetProduct), new { id = createdProduct.Id }, createdProduct);
+                var result = await _productService.CreateProductAsync(name, description, price, category);
+
+                if (!result)
+                {
+                    _logger.LogError($"Unable to save product.");
+                    return BadRequest("Product was not saved.");
+                }
             }
             catch (Exception ex)
             {
-                // Handle exceptions (e.g., validation, or business logic exceptions)
-                return BadRequest(ex.Message);
+                _logger.LogError(ex.ToString());
+                return BadRequest(ex.ToString());
             }
+
+            return Ok("Product saved.");
         }
 
         // GET: /Products/{id}
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetProduct(int id)
+        public async Task<IActionResult> GetProduct(Guid id)
         {
-            var product = await _productService.GetProductByIdAsync(id);
+            var product = await _productService.GetByIdAsync(id);
+
             if (product == null)
             {
                 return NotFound();
@@ -43,7 +52,5 @@ namespace Application.Controllers
 
             return Ok(product);
         }
-
-        // Additional actions for updating or deleting products can be added here
     }
 }

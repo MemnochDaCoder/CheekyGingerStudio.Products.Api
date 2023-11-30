@@ -5,7 +5,7 @@ using Infrastructure.Repositories.Interfaces;
 
 namespace Application.Services
 {
-    public class ProductService
+    public class ProductService : IProductService
     {
         private readonly IProductRepository _repository;
         private readonly IProductFactory _factory;
@@ -23,14 +23,13 @@ namespace Application.Services
             return await _repository.GetByIdAsync(id);
         }
 
-        public async Task CreateProductAsync(string name, string description, decimal price, string category)
+        public async Task<bool> CreateProductAsync(string name, string description, decimal price, string category)
         {
             var product = _factory.CreateProduct(name, description, price, category);
             var productCreatedEvent = new ProductCreatedEvent(product.Id, product.Name, product.Description, product.Price, product.Category);
 
             // Persist
-            // Save events logic here...
-            await SaveProductAsync(product);
+            return await SaveProductAsync(product);
         }
 
         public async Task<bool> SaveProductAsync(Product product)
@@ -42,11 +41,8 @@ namespace Application.Services
             }
 
             // Persist
-            // Save events logic here...
             return await _repository.SaveProductAsync(product);
         }
-
-        // Additional methods for UpdateProduct, DeleteProduct, etc.
 
         private bool ValidateProduct(Product product)
         {
