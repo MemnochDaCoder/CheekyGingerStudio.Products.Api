@@ -10,7 +10,7 @@ namespace Infrastructure.Eventing
 {
     public class EventStore : IEventStore
     {
-        private readonly string _connectionString;
+        private readonly string? _connectionString;
 
         public EventStore(IOptions<PostGresOptions> options)
         {

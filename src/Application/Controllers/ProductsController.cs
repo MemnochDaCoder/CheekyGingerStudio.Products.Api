@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Application.Services;
-using Domain.Models;
 
 namespace Application.Controllers
 {

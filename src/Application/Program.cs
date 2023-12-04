@@ -4,7 +4,6 @@ using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Microsoft.EntityFrameworkCore;
 using Infrastructure.Repositories.Interfaces;
-using Domain.Events;
 using Application.Services;
 using Application.Factories.Interfaces;
 using Application.Factories;

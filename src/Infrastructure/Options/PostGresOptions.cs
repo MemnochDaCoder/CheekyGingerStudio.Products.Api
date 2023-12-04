@@ -5,6 +5,6 @@ namespace Infrastructure.Options
     [ExcludeFromCodeCoverage]
     public class PostGresOptions
     {
-        public required string ConnectionString { get; set; }
+        public string? ConnectionString { get; set; }
     }
 }
